@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AB-Modbus SCADA · MS ROBOTIKA</title>
+<link rel="icon" href="/favicon.svg"><link rel="stylesheet" href="/style.css"><link rel="stylesheet" href="/scada.css">
+<script src="/scada.js" defer></script>
+</head>
+<body>
+<aside class="sidebar"><a class="brand" href="/"><span class="brand-mark">AB<span>•</span></span><span>MS ROBOTIKA<small>Ingeniería abierta</small></span></a>
+<p class="nav-label">MODBUS STUDIO</p><nav aria-label="Secciones"><a href="/">◫ Cliente TCP</a><a href="/scada.html" class="active" aria-current="page">◉ SCADA</a><a href="/#monitor">≋ Monitor TCP</a></nav>
+<div class="sidebar-foot"><span class="dot"></span> Modo visualización<p>Sin escrituras · Sin telemetría externa</p></div></aside>
+<main>
+<header class="sc-header"><div><p class="eyebrow">MODBUS / SUPERVISIÓN INDUSTRIAL</p><h1>AB-Modbus <span class="sc-brand">SCADA</span> <span class="tag">ALFA</span></h1><p class="subtitle">Tendencias, estados y alarmas para equipos autorizados.</p></div>
+<div class="head-badges"><span class="state-pill" id="state-pill">DESCONECTADO</span><span class="read-only">SOLO LECTURA</span></div></header>
+<div class="sc-warning"><strong>Supervisión experimental.</strong> Las alarmas son informativas y funcionan solamente con esta pestaña abierta. No son un sistema de seguridad, enclavamiento ni parada de emergencia. No se conecta a ningún equipo automáticamente.</div>
+<div class="panel sc-controls">
+<div class="panel-title"><div><p class="eyebrow">ORIGEN DE DATOS</p><h2>Adquisición Modbus TCP</h2></div><span class="muted-pill">FC01–04 · sin escrituras</span></div>
+<form id="config-form"><div class="sc-fields">
+<label>Perfil guardado<select id="profile"></select></label>
+<label>IPv4 del equipo<input id="host" value="127.0.0.1" required autocomplete="off"></label>
+<label>Puerto<input id="port" type="number" min="1" max="65535" value="15020" required></label>
+<label>Unidad<select id="unit"><option value="1">1</option><option value="0">0</option></select></label>
+<label>Función<select id="function"><option value="3">03 · Holding registers</option><option value="4">04 · Input registers</option><option value="1">01 · Coils</option><option value="2">02 · Discrete inputs</option></select></label>
+<label>Dirección PDU<input id="address" type="number" min="0" max="65535" value="0" required></label>
+<label>N.º de puntos<input id="count" type="number" min="1" max="16" value="8" required></label>
+<label>Intervalo (ms)<input id="interval" type="number" min="1000" max="60000" value="2000" required></label>
+</div><div class="control-footer"><label class="sc-consent"><input type="checkbox" id="allow-lan"><span>Autorizar expresamente lectura a IPv4 privada (RFC1918) de mi red.</span></label>
+<div class="sc-actions"><button type="button" id="demo">Laboratorio local</button><button type="button" id="once">Leer una vez</button><button type="submit" id="start" class="primary">▶ Iniciar supervisión</button></div></div></form>
+<div id="notice" class="notice" role="status" aria-live="polite">En espera. Pulsa «Laboratorio local» para hacer una demostración sin PLC.</div>
+</div>
+<section class="sc-kpis" aria-label="Resumen"><div class="sc-kpi"><span>Lecturas correctas</span><strong id="kpi-reads">0</strong><small>Desde que se abrió esta página</small></div><div class="sc-kpi"><span>Puntos disponibles</span><strong id="kpi-points">—</strong><small>Valores de la última lectura</small></div><div class="sc-kpi"><span>Latencia TCP</span><strong id="kpi-delay">—</strong><small>Milisegundos de respuesta</small></div><div class="sc-kpi"><span>Alarmas activas</span><strong id="kpi-alarms">0</strong><small>Umbrales informativos</small></div></section>
+<div class="sc-layout">
+<section class="panel" id="valores"><div class="panel-title"><div><p class="eyebrow">TELEMETRÍA</p><h2>Registros y estados</h2></div><span id="last-read" class="muted-pill">Sin muestras</span></div><p class="sc-help">Los valores son datos brutos sin conversión a unidades físicas. Ningún registro representa una temperatura o presión salvo que el usuario configure y verifique su escala.</p><div class="sc-points" id="points"><div class="empty-note">Inicia una lectura para visualizar los puntos.</div></div></section>
+<section class="panel" id="tendencias"><div class="panel-title"><div><p class="eyebrow">HISTÓRICO EN MEMORIA</p><h2>Tendencia temporal</h2></div><button type="button" id="export-csv">Exportar CSV</button></div>
+<div class="sc-selector"><label>Canal representado<select id="selected-point"></select></label><span id="chart-meta">Sin datos</span></div>
+<div class="chart-frame"><svg id="trend" viewBox="0 0 900 290" role="img" aria-label="Gráfica de tendencia de registros"><text x="450" y="145" fill="#8b9aaa" text-anchor="middle">Sin muestras todavía</text></svg></div>
+<p class="sc-help">Máximo 1000 muestras en memoria de esta pestaña. CSV exportable; sin historiador persistente todavía.</p>
+</section></div>
+<div class="sc-layout bottom">
+<section class="panel" id="alarmas"><div class="panel-title"><div><p class="eyebrow">UMBRALES INFORMATIVOS</p><h2>Alarmas</h2></div><button id="ack" type="button">Reconocer eventos</button></div>
+<div class="alarm-fields"><label>Canal<select id="alarm-channel"></select></label><label>Umbral bajo (opcional)<input id="low" type="number" placeholder="Sin límite"></label><label>Umbral alto (opcional)<input id="high" type="number" placeholder="Sin límite"></label><button id="apply-alarm" type="button">Aplicar</button></div><p class="sc-help">Los eventos reconocidos no detienen ningún equipo. Los límites se aplican a valores brutos de lectura y se mantienen únicamente en esta sesión.</p><div id="alarms-list" class="alarm-list"><div class="empty-note">Sin eventos registrados</div></div></section>
+<section class="panel" id="eventos"><div class="panel-title"><div><p class="eyebrow">AUDITORÍA LOCAL</p><h2>Eventos y comunicación</h2></div><button type="button" id="clear">Limpiar sesión</button></div><div id="log" class="sc-events"><div class="empty-note">El monitor comenzará al recibir datos.</div></div></section>
+</div><footer><span>MS ROBOTIKA · AB-Modbus SCADA · MIT · Desarrollo independiente</span><span>El motor bloquea las funciones de escritura</span></footer>
+</main></body></html>
