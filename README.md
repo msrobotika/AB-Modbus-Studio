@@ -39,6 +39,22 @@ Chromium de pruebas. Revisa
 Estas capturas ilustran la versión 0.1.0 y no acreditan compatibilidad con
 PLC físicos ni funcionalidad RTU.
 
+## AB-Modbus SCADA · supervisión industrial (alfa)
+
+**Nuevo módulo integrado:** abre AB-Modbus Studio y pulsa **AB-Modbus SCADA**
+en el menú izquierdo. Conserva el motor original FC01–04 de solo lectura.
+Incluye puntos en tiempo real, tendencia SVG, alarmas informativas por umbral,
+histórico de 1000 muestras y exportación CSV, sin bibliotecas gráficas externas.
+Una alarma no puede sustituir la protección o la parada de emergencia de una máquina.
+
+Para verlo funcionando sin PLC, pulsa **Laboratorio local** y el simulador
+devolverá los registros de prueba por TCP. No hay conexión automática a PLC
+reales ni autorización de LAN persistente.
+
+- [Instrucciones, alcances y seguridad del SCADA](docs/SCADA.md).
+- [Capturas automáticas de SCADA desde Chromium y simulador TCP](https://github.com/msrobotika/AB-Modbus-Studio/actions/workflows/screenshots.yml).
+- Los PNG se consultan en `docs/screenshots/` **solo después** de que la ejecución de GitHub Actions los genere correctamente. No se presentan mockups como capturas.
+
 ## Descargar y ejecutar
 
 El código está en este repositorio. En GitHub, **Code → Download ZIP** descarga
