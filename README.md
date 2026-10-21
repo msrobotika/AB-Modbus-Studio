@@ -21,6 +21,13 @@ No necesita Python instalado ni permisos de administrador. Se abre el navegador
 predeterminado y una consola de proceso. Pulsa **Cerrar aplicación** o Ctrl+C para
 detenerla. El ejecutable no está firmado; no se ofrece certificado de firma.
 
+### Linux portable
+
+Extrae el ZIP portable de Linux, ejecuta `chmod +x AB-Modbus-Studio` y abre
+`./AB-Modbus-Studio`. Se construye para Linux x86_64 en el runner Ubuntu de CI;
+no se garantiza compatibilidad con distribuciones de glibc más antigua. Para
+otras arquitecturas o distribuciones, usa el código fuente.
+
 ### Código fuente (Windows y Linux)
 
 Requiere Python 3.11 o posterior y un navegador moderno. No necesita instalar

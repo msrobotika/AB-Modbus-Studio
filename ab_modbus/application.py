@@ -57,7 +57,6 @@ class Application:
             self.monitor.clear()
             return {"ok": True}
         if path == "/api/shutdown" and not body:
-            threading.Thread(target=self.shutdown, daemon=True).start()
             return {"ok": True}
         raise ProtocolError("Operación no disponible")
 
@@ -112,7 +111,7 @@ class Handler(BaseHTTPRequestHandler):
             self.respond(403, {"error": "Petición entre sitios bloqueada"})
             return False
         expected = "Bearer " + self.server.application.token
-        if auth and not secrets.compare_digest(self.headers.get("Authorization", ""), expected):
+        if auth and not secrets.compare_digest(self.headers.get("Authorization", "").encode("utf-8"), expected.encode("ascii")):
             self.respond(401, {"error": "Sesión no autorizada. Abre la URL de inicio completa."})
             return False
         return True
@@ -154,5 +153,8 @@ class Handler(BaseHTTPRequestHandler):
             body = json.loads(raw)
             result = self.server.application.action(self.path, body)
             self.respond(200, result)
-        except (ProtocolError, ValueError, TypeError, UnicodeError, OSError) as error:
+            if self.path == "/api/shutdown":
+                self.wfile.flush()
+                threading.Thread(target=self.server.application.shutdown, daemon=True).start()
+        except (ProtocolError, ValueError, TypeError, UnicodeError, OSError, RecursionError) as error:
             self.respond(400, {"error": str(error)[:400]})

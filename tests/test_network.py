@@ -134,6 +134,25 @@ class NetworkTests(unittest.TestCase):
     def test_simulator_bind_is_local(self):
         self.assertEqual(self.sim._server.server_address[0], "127.0.0.1")
 
+    def test_stop_closes_existing_connections(self):
+        with socket.create_connection(("127.0.0.1", self.sim.port), timeout=1) as sock:
+            sock.sendall(Frame(1, 1, read_request(3, 0, 1)).encode())
+            receive_adu(sock, time.monotonic() + 1)
+            self.sim.stop()
+            self.assertEqual(sock.recv(1), b"")
+        self.sim.start(0)
+        self.assertEqual(ReadClient().read(port=self.sim.port, count=1)["values"], [230])
+
+    def test_malformed_mbap_closes_connection(self):
+        with socket.create_connection(("127.0.0.1", self.sim.port), timeout=1) as sock:
+            sock.sendall(bytes.fromhex("000100010006010300000001"))
+            try:
+                data = sock.recv(1)
+            except ConnectionResetError:
+                data = b""
+            self.assertEqual(data, b"")
+        self.assertEqual(ReadClient().read(port=self.sim.port, count=1)["values"], [230])
+
     def test_concurrent_read_is_rejected(self):
         client = ReadClient(); client._lock.acquire()
         try:

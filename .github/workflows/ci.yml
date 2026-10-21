@@ -52,6 +52,7 @@ jobs:
           path: artifacts
       - name: Empaquetar y calcular SHA-256
         run: |
+          chmod +x artifacts/AB-Modbus-Studio-Linux/AB-Modbus-Studio
           for directory in artifacts/*; do
             name=$(basename "$directory")
             (cd "$directory" && zip -r "../../$name.zip" .)
