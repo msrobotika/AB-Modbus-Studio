@@ -1,0 +1,35 @@
+/* SPDX-License-Identifier: MIT · Copyright (c) 2026 MS ROBOTIKA */
+:root{--ink:#152d3e;--teal:#14846c;--line:#dfE8ed}
+.sc-header{gap:20px}.sc-brand{color:#16836d}.head-badges{display:flex;gap:9px;flex-wrap:wrap}
+.state-pill,.read-only{font-size:10px;letter-spacing:.8px;font-weight:750;border-radius:20px;padding:10px 13px;background:#e8edf2;color:#697f8c;white-space:nowrap}
+.state-pill.active{background:#e0f5ed;color:#126c51}.state-pill.error{background:#ffebea;color:#a13e38}.read-only{background:#e7f4ee;color:#17785e}
+.sc-warning{padding:14px 17px;background:#fffae8;border:1px solid #f2e5af;color:#725d2e;border-radius:9px;line-height:1.7;margin-bottom:22px;font-size:12px}
+.sc-controls{margin-bottom:20px}.sc-fields{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px}.sc-fields label:first-child{grid-column:span 2}
+.control-footer{display:flex;align-items:center;justify-content:space-between;gap:20px;margin-top:21px}
+.sc-consent{display:flex;flex-direction:row;align-items:center;max-width:480px;gap:10px;font-size:12px;font-weight:500}
+.sc-consent input{width:18px;min-height:18px;accent-color:var(--teal)}
+.sc-actions{display:flex;flex-wrap:wrap;gap:9px}.sc-actions button{white-space:nowrap}.sc-actions .primary{display:inline-block;background:#147861;color:white}
+.sc-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin-bottom:22px}
+.sc-kpi{background:white;border:1px solid var(--line);border-radius:10px;padding:19px;min-width:0}
+.sc-kpi span{display:block;color:#718594;font-size:11px;font-weight:650}.sc-kpi strong{display:block;color:var(--ink);font-size:32px;margin:8px 0;font-variant-numeric:tabular-nums}
+.sc-kpi small{font-size:10px}.sc-layout{display:grid;grid-template-columns:1fr 1.15fr;gap:20px}.sc-layout>.panel{min-width:0}
+.sc-help{font-size:11px;color:#7c90a0;line-height:1.75;margin:5px 0 18px}
+.sc-points{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;max-height:390px;overflow:auto}
+.sc-point{border:1px solid #e2eaf0;border-radius:9px;padding:12px;background:#fbfcfe}
+.sc-point strong{font-size:23px;display:block;font-variant-numeric:tabular-nums;color:#153947;margin:9px 0 3px}
+.sc-point .label{font-size:11px;color:#698092}.sc-point small{display:block;font-size:10px}.sc-point.alarm-high,.sc-point.alarm-low{border-color:#edc3b7;background:#fff7f5}
+.sc-point.alarm-high strong,.sc-point.alarm-low strong{color:#ad4535}
+.empty-note{font-size:12px;color:#8a9da9;padding:18px}
+.sc-selector{display:flex;gap:18px;align-items:flex-end;justify-content:space-between}
+.sc-selector label{min-width:140px}.sc-selector span{font-size:11px;color:#748894}.chart-frame{width:100%;margin-top:15px;background:#f9fbfc;border:1px solid #edf1f4;border-radius:8px;padding:10px}
+#trend{display:block;width:100%;height:auto;min-height:180px}
+.sc-layout.bottom{grid-template-columns:1fr 1fr}
+.alarm-fields{display:grid;grid-template-columns:1.2fr 1fr 1fr auto;gap:9px;align-items:end}.alarm-fields button{min-height:38px}
+.alarm-list,.sc-events{max-height:320px;overflow:auto}.alarm-event,.sc-event{border-bottom:1px solid #e9eef2;padding:10px 4px;display:flex;gap:11px;font-size:12px}
+.alarm-event time,.sc-event time{color:#9aa9b0;font-size:10px;min-width:74px}
+.alarm-event .level{font-weight:750;color:#ad483e}.alarm-event.ack .level{color:#779b8a}
+.sc-event{color:#587184}
+#notice.error{color:#ad4535}footer{margin-top:8px}
+@media(max-width:1350px){.sc-fields{grid-template-columns:repeat(3,minmax(0,1fr))}.sc-layout{grid-template-columns:1fr}.sc-layout.bottom{grid-template-columns:1fr 1fr}}
+@media(max-width:950px){.sc-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.sc-layout.bottom{grid-template-columns:1fr}.control-footer{align-items:stretch;flex-direction:column}.sc-fields{grid-template-columns:repeat(2,minmax(0,1fr))}.sc-fields label:first-child{grid-column:span 2}}
+@media(max-width:600px){.sc-header{align-items:start;flex-direction:column}.sc-fields{grid-template-columns:repeat(2,minmax(0,1fr))}.sc-kpis{gap:9px}.sc-kpi{padding:13px}.sc-kpi strong{font-size:24px}.sc-points{grid-template-columns:1fr}.sc-actions{display:grid;grid-template-columns:1fr 1fr}.sc-actions .primary{grid-column:1/-1}.alarm-fields{grid-template-columns:1fr 1fr}.alarm-fields label:first-child{grid-column:1/-1}footer{flex-direction:column}}
