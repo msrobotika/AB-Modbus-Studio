@@ -20,6 +20,8 @@ jobs:
         with:
           python-version: ${{ matrix.python }}
       - run: python -m unittest discover -v
+      - name: Verificar sintaxis del frontend SCADA
+        run: node --check ab_modbus/web/scada.js
       - run: python -m ab_modbus --self-test
   portable:
     if: startsWith(github.ref, 'refs/tags/v') || github.event_name == 'workflow_dispatch'
