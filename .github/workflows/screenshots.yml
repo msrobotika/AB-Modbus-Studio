@@ -6,6 +6,7 @@ on:
     paths:
       - 'ab_modbus/**'
       - 'tools/capture_screenshots.py'
+      - 'tools/capture_scada.py'
       - '.github/workflows/screenshots.yml'
   workflow_dispatch:
 
@@ -36,7 +37,9 @@ jobs:
           python -m unittest discover -v
           python -m ab_modbus --self-test
       - name: Capturar aplicación en ejecución con el simulador
-        run: python tools/capture_screenshots.py
+        run: |
+          python tools/capture_screenshots.py
+          python tools/capture_scada.py
       - name: Publicar también como artefacto descargable
         uses: actions/upload-artifact@v4
         with:
