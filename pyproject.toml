@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ab-modbus-studio"
+version = "0.1.0"
+description = "Cliente Modbus TCP de solo lectura y laboratorio local de MS ROBOTIKA"
+readme = "README.md"
+requires-python = ">=3.11"
+license = "MIT"
+authors = [{name = "MS ROBOTIKA"}]
+dependencies = []
+
+[project.scripts]
+ab-modbus-studio = "ab_modbus.__main__:main"
+
+[tool.setuptools.package-data]
+ab_modbus = ["web/*"]
+
+[tool.setuptools.packages.find]
+include = ["ab_modbus*"]

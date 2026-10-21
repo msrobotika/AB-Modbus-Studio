@@ -1,0 +1,123 @@
+# AB-Modbus Studio
+
+**MS ROBOTIKA · 0.1.0 · MIT · Windows / Linux · interfaz en español**
+
+Cliente Modbus TCP de solo lectura, simulador local y monitor de tramas.
+Motor e interfaz escritos para este proyecto desde las especificaciones públicas,
+sin incorporar bibliotecas Modbus ni código de otras aplicaciones.
+
+## Descargar y ejecutar
+
+El código está en este repositorio. En GitHub, **Code → Download ZIP** descarga
+el código de la rama seleccionada; **Releases** contiene los portables cuando
+se ha publicado una versión. Un ZIP de código requiere Python; no es un instalador.
+Comprueba los archivos concretos de cada Release y su SHA-256 antes de usarlos.
+No hay actualizaciones ni descargas ocultas dentro de la aplicación.
+
+### Windows portable
+
+Extrae el ZIP portable completo en una carpeta y abre `AB-Modbus-Studio.exe`.
+No necesita Python instalado ni permisos de administrador. Se abre el navegador
+predeterminado y una consola de proceso. Pulsa **Cerrar aplicación** o Ctrl+C para
+detenerla. El ejecutable no está firmado; no se ofrece certificado de firma.
+
+### Código fuente (Windows y Linux)
+
+Requiere Python 3.11 o posterior y un navegador moderno. No necesita instalar
+dependencias para ejecutar ni probar el código:
+
+```sh
+python -m ab_modbus
+# En Linux, si el comando es python3:
+python3 -m ab_modbus
+```
+
+En Windows también puedes abrir `AB-Modbus-Studio.bat`. En Linux:
+`sh AB-Modbus-Studio.sh`. En un equipo sin apertura automática de navegador,
+ejecuta con `--no-browser` y copia la URL completa que aparece en consola,
+incluido el fragmento de sesión. La web solo escucha en `127.0.0.1`.
+
+## Primera prueba en menos de un minuto
+
+1. Abre la aplicación y pulsa **Iniciar y probar FC03 →**.
+2. Verás ocho valores: `230, 1500, 42, 2026, 100, 0, 65535, 1234`.
+3. Cambia el tipo a **01 · Coils** y pulsa **Leer datos**.
+4. El monitor mostrará las ADU completas en hexadecimal, TX y RX de ambos extremos.
+5. En **Editar memoria del simulador**, cambia un valor y vuelve a leer.
+   La edición modifica memoria interna; no envía una función Modbus de escritura.
+
+El laboratorio usa el puerto TCP 15020 y unidad 1 por defecto. Si el puerto está
+ocupado, elige otro (1024–65535). Cada banco tiene 4096 direcciones, 0–4095.
+Las referencias 00001/10001/30001/40001 son etiquetas convencionales; el campo
+que se transmite es **Dirección PDU, base cero**. Para PDU mayores de 9998 la
+columna de referencia muestra «—» para evitar etiquetas ambiguas.
+
+## Qué incluye
+
+- FC01 coils y FC02 entradas discretas (1–2000 bits por solicitud).
+- FC03 retención y FC04 entrada (1–125 registros uint16 por solicitud).
+- Lectura bajo demanda y repetición ≥1000 ms, sin solapamientos ni reintentos.
+  Se detiene al fallar, editar parámetros o dejar la pestaña en segundo plano.
+- Validación de MBAP, TID, Unit ID, función, longitudes y relleno de bits.
+- Simulador exclusivamente local que rechaza funciones de escritura.
+- Monitor propio de ADU con hasta 500 eventos en memoria y exportación JSON.
+- Hasta 50 perfiles locales, importación/exportación JSON y persistencia atómica.
+- API local autenticada por secreto aleatorio por ejecución, bloqueo de Host y
+  Origin ajenos, sin CORS, recursos sin CDN ni telemetría.
+- Pruebas de protocolo, TCP fragmentado/concatenado, errores y políticas de red.
+
+## Conectar a un equipo autorizado
+
+Introduce su IPv4 privada, puerto y unidad; marca **Permitir lectura en una IP
+privada de mi red**. Solo se aceptan redes RFC1918 (10/8, 172.16/12, 192.168/16).
+La autorización se reinicia al cambiar destino, cargar perfil o reiniciar sesión.
+No se guardan permisos de red en perfiles. DNS, IP públicas, IPv6 y broadcast
+no forman parte del MVP. No hay exploración ni descubrimiento de equipos.
+
+Modbus TCP tradicional no aporta autenticación ni cifrado. Trabaja en una red de
+laboratorio aislada y con autorización; incluso las lecturas generan carga.
+No uses esta versión para funciones de seguridad ni control de producción.
+Ver [SECURITY.md](SECURITY.md) para límites concretos.
+
+## Perfiles y datos
+
+Windows: `%LOCALAPPDATA%/MSRobotika/ABModbusStudio/profiles.json`.
+Linux: `$XDG_CONFIG_HOME/ab-modbus-studio/profiles.json`, o
+`~/.config/ab-modbus-studio/profiles.json` si no existe esa variable.
+También se admite `--data-dir RUTA`. Un archivo incompatible se rechaza al
+iniciar sin sobrescribirlo: consérvalo y usa otra carpeta para recuperar acceso.
+Las tramas solo se guardan en disco si las exportas desde la interfaz.
+
+## Probar y construir
+
+```sh
+python -m unittest discover -v
+python -m ab_modbus --self-test
+python -m venv .venv
+# Activa el entorno de tu sistema antes de los siguientes pasos:
+python -m pip install -r requirements-build.txt
+python tools/build.py
+```
+
+`tools/build.py` ejecuta las pruebas, crea un portable para el sistema actual,
+ejecuta la autoprueba del binario y reúne las licencias en `dist/`.
+No compila Windows desde Linux ni Linux desde Windows. La configuración de CI
+ejecuta pruebas en Windows/Linux y Python 3.11/3.13; un tag `v*` construye
+portables y un borrador de Release para revisión.
+
+## Arquitectura y estado
+
+`protocol.py` es puro; `transport.py` limita lectura y destinos; `client.py`
+expone solo lecturas; `server.py` aloja el laboratorio; `application.py` sirve la
+API; `profiles.py` valida persistencia; `web/` contiene la interfaz propia sin
+frameworks. Documentación: [arquitectura](docs/ARCHITECTURE.md),
+[protocolo y procedencia](docs/PROTOCOL.md), [ROADMAP](ROADMAP.md),
+[dependencias](DEPENDENCIES.md), [revisión legal preliminar](docs/LEGAL_REVIEW.md).
+
+**RTU todavía no está implementado.** No hay puerto serie, CRC RTU, float32,
+escrituras, TLS Modbus Security, certificación oficial ni pruebas sobre PLC físico.
+El alcance de verificación de cada entrega se recoge en `docs/VERIFICATION.md`.
+
+Copyright © 2026 MS ROBOTIKA. Licencia [MIT](LICENSE). Creado con asistencia de IA;
+la originalidad de esta implementación no garantiza inmunidad jurídica ni sustituye
+una revisión profesional de marcas, patentes, licencias y titularidad.

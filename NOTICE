@@ -1,0 +1,15 @@
+AB-Modbus Studio 0.1.0
+Copyright (c) 2026 MS ROBOTIKA. Distribuido bajo licencia MIT.
+
+Implementación independiente creada para este proyecto con asistencia de IA.
+El motor de protocolo, pruebas e interfaz se han escrito para esta entrega.
+No se ha utilizado código ni recursos gráficos de otros clientes Modbus.
+La documentación normativa se ha consultado para interoperabilidad; sus
+textos, diagramas y ejemplos de arquitectura no se redistribuyen aquí.
+Los vectores binarios normativos se emplean para comprobar compatibilidad.
+
+MODBUS es una marca registrada según la especificación V1.1b3 de Modbus
+Organization/Schneider Automation. Se usa para identificar el protocolo.
+No existe afiliación, patrocinio ni certificación implícita.
+Los runtimes y herramientas de terceros conservan sus propias licencias.
+Véanse THIRD_PARTY_NOTICES.md y docs/LEGAL_REVIEW.md.
