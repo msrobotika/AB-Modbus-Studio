@@ -125,6 +125,9 @@ class Handler(BaseHTTPRequestHandler):
         assets = {"/": ("index.html", "text/html; charset=utf-8"),
                   "/app.js": ("app.js", "text/javascript; charset=utf-8"),
                   "/style.css": ("style.css", "text/css; charset=utf-8"),
+                  "/scada.html": ("scada.html", "text/html; charset=utf-8"),
+                  "/scada.js": ("scada.js", "text/javascript; charset=utf-8"),
+                  "/scada.css": ("scada.css", "text/css; charset=utf-8"),
                   "/favicon.svg": ("favicon.svg", "image/svg+xml")}
         if self.path in assets:
             filename, content_type = assets[self.path]
