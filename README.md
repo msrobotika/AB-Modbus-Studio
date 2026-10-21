@@ -8,7 +8,13 @@ sin incorporar bibliotecas Modbus ni código de otras aplicaciones.
 
 ## Capturas reales de la aplicación
 
-Estas imágenes se generan automáticamente en GitHub Actions ejecutando el
+Las tres imágenes de esta sección **se generan en GitHub Actions**. Si aún no
+aparecen, la generación no se ha completado: entra en
+[Acciones → Capturas reales de AB-Modbus Studio](https://github.com/msrobotika/AB-Modbus-Studio/actions/workflows/screenshots.yml),
+elige **Run workflow**, rama **main**, y revisa que la ejecución termine correctamente.
+El workflow guarda los PNG en \`docs/screenshots/\` y también como artefacto.
+
+Estas imágenes se generan ejecutando el
 programa y su simulador Modbus TCP en Chromium. No son renders conceptuales:
 la captura de escritorio verifica una lectura FC03 de ocho registros y el
 monitor de tramas muestra los intercambios TX/RX reales del laboratorio local.
