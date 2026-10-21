@@ -7,6 +7,19 @@
 - Pruebas automatizadas y construcción de portable con licencias.
 - Acceso a red privada explícito y escrituras ausentes del motor.
 
+## Extensión SCADA alfa — integrada (pendiente de validación E2E en CI)
+
+- Dashboard original de supervisión read-only para el cliente FC01–04.
+- Tendencias SVG, umbrales configurables por canal, eventos y reconocimiento informativo.
+- Muestreo secuencial con inicio voluntario, intervalo mínimo de 1000 ms y
+  parada en error u ocultación de pestaña.
+- Memoria efímera: 1000 muestras; exportación CSV; sin escritura a dispositivos.
+- Prueba y capturas de integración con Chromium y simulador local, mediante
+  `tools/capture_scada.py` y workflow de GitHub Actions.
+
+**Pendiente:** evidencias del job de navegador, más seguridad, base de datos
+de series temporales, unidad/escala configurable y gestión persistente de alarmas.
+
 ## 0.2 — Interoperabilidad TCP
 
 - Verificar contra varios equipos reales autorizados y registrar matrices de compatibilidad.
