@@ -6,6 +6,33 @@ Cliente Modbus TCP de solo lectura, simulador local y monitor de tramas.
 Motor e interfaz escritos para este proyecto desde las especificaciones públicas,
 sin incorporar bibliotecas Modbus ni código de otras aplicaciones.
 
+## Capturas reales de la aplicación
+
+Estas imágenes se generan automáticamente en GitHub Actions ejecutando el
+programa y su simulador Modbus TCP en Chromium. No son renders conceptuales:
+la captura de escritorio verifica una lectura FC03 de ocho registros y el
+monitor de tramas muestra los intercambios TX/RX reales del laboratorio local.
+
+**Escritorio · Cliente TCP y lecturas del simulador**
+
+![AB-Modbus Studio ejecutándose en escritorio y mostrando registros](docs/screenshots/escritorio.png)
+
+**Monitor de tramas Modbus TCP**
+
+![Monitor real de tramas TCP en hexadecimal](docs/screenshots/monitor-tramas.png)
+
+**Vista móvil · Diseño adaptable**
+
+![AB-Modbus Studio ejecutándose en un navegador móvil emulado](docs/screenshots/movil.png)
+
+La vista móvil se captura en Chromium con un viewport de 390 × 844; no es una
+aplicación nativa Android. Puedes reproducir la evidencia con
+`python tools/capture_screenshots.py` después de instalar Playwright y su
+Chromium de pruebas. Revisa
+[el workflow de capturas](.github/workflows/screenshots.yml).
+Estas capturas ilustran la versión 0.1.0 y no acreditan compatibilidad con
+PLC físicos ni funcionalidad RTU.
+
 ## Descargar y ejecutar
 
 El código está en este repositorio. En GitHub, **Code → Download ZIP** descarga
