@@ -127,6 +127,12 @@ columna de referencia muestra «—» para evitar etiquetas ambiguas.
   Origin ajenos, sin CORS, recursos sin CDN ni telemetría.
 - Pruebas de protocolo, TCP fragmentado/concatenado, errores y políticas de red.
 
+## Conectar con AB-PLC Simulator (Suite MS ROBOTIKA)
+
+Nuestro **AB-PLC Simulator** publica opcionalmente un PLC virtual por Modbus TCP en el mismo ordenador, únicamente para lectura. En el proyecto del simulador ejecuta **npm run sim:modbus** y desde AB-Modbus Studio configura **127.0.0.1:1502, Unit ID 1, FC03, dirección 0, cantidad 5**, dejando desmarcada la autorización LAN. Puedes supervisar su CPU simulada sin conectarte a equipos industriales reales.
+
+Consulta el [procedimiento de integración, mapa de registros y limitaciones](docs/AB_PLC_SIMULATOR.md). El servicio Node ejecuta su propia CPU y todavía no sincroniza el estado con la interfaz web del simulador.
+
 ## Conectar a un equipo autorizado
 
 Introduce su IPv4 privada, puerto y unidad; marca **Permitir lectura en una IP
