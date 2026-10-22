@@ -1,5 +1,10 @@
 # AB-Modbus Studio
 
+> **Ficha del proyecto · MS ROBOTIKA**  
+> **Estado:** v0.1 · cliente Modbus TCP de solo lectura y laboratorio · **Licencia:** MIT (archivo LICENSE)  
+> [**Capturas verificables**](docs/screenshots/) · [Pruebas/CI](https://github.com/msrobotika/AB-Modbus-Studio/actions) · [Estado técnico](docs/PROJECT_STATUS.md)  
+> **Límite:** Sin escrituras a equipos industriales; pruebas con simulador local, no certificado.
+
 **MS ROBOTIKA · 0.1.0 · MIT · Windows / Linux · interfaz en español**
 
 Cliente Modbus TCP de solo lectura, simulador local y monitor de tramas.
