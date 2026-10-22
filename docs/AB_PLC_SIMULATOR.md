@@ -5,8 +5,8 @@
 ## Puesta en marcha
 
 1. Instala Node.js 20+ para AB-PLC Simulator.
-2. En el proyecto [AB-PLC Simulator](https://github.com/msrobotika/AB-PLC-Simulator), ejecuta npm run sim:modbus. Es un proceso Node independiente del navegador y únicamente escucha en 127.0.0.1:1502.
-3. Abre AB-Modbus Studio como cliente, en otra consola, con python -m ab_modbus.
+2. En el proyecto [AB-PLC Simulator](https://github.com/msrobotika/AB-PLC-Simulator), ejecuta npm run suite:live. El mismo proceso Node ofrece la HMI autenticada y un servidor Modbus TCP de solo lectura que comparten una única CPU. Ambos escuchan únicamente en 127.0.0.1.
+3. Abre la URL privada que imprimió AB-PLC Simulator en el navegador del mismo PC, pulsa RUN y MARCHA. Abre AB-Modbus Studio como cliente, en otra consola, con python -m ab_modbus.
 4. En el formulario de lectura configura:
    - Dirección del equipo: **127.0.0.1**
    - Puerto TCP: **1502**
@@ -38,8 +38,12 @@ El comando anterior se ejecuta en el directorio de AB-PLC Simulator, no en AB-Mo
 
 - Solo hay **lecturas**, nunca escritura en máquinas. El servidor rechaza FC05, FC06, FC15 y FC16 por excepción de función ilegal.
 - Únicamente se escucha en 127.0.0.1; no se habilita acceso LAN ni red industrial.
-- El puente Node tiene su propia CPU de simulación: **no comparte aún el estado con la pestaña web** de AB-PLC Simulator.
+- **Suite Live comparte exactamente la misma instancia VirtualPLC entre la HMI web y Modbus TCP.** El modo antiguo npm run sim:modbus permanece independiente de la pestaña web.
 - Esta guía documenta el procedimiento de integración. No constituye certificación de equivalencia industrial, precisión física, interoperabilidad universal ni funciones de seguridad.
 - Detén el puente con Ctrl+C al terminar. No publiques el puerto mediante redirecciones ni túneles externos.
 
 [Contrato de integración de la Suite](https://github.com/msrobotika/AB-PLC-Simulator/blob/main/docs/SUITE_PROTOCOL.md).
+
+## Modo anterior independiente
+
+El comando npm run sim:modbus continúa disponible y crea una CPU virtual autónoma sin HMI compartida. Para controlar la CPU desde la pantalla y leer esa misma CPU por Modbus utiliza exclusivamente npm run suite:live.
