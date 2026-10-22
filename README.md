@@ -129,9 +129,9 @@ columna de referencia muestra «—» para evitar etiquetas ambiguas.
 
 ## Conectar con AB-PLC Simulator (Suite MS ROBOTIKA)
 
-Nuestro **AB-PLC Simulator** publica opcionalmente un PLC virtual por Modbus TCP en el mismo ordenador, únicamente para lectura. En el proyecto del simulador ejecuta **npm run sim:modbus** y desde AB-Modbus Studio configura **127.0.0.1:1502, Unit ID 1, FC03, dirección 0, cantidad 5**, dejando desmarcada la autorización LAN. Puedes supervisar su CPU simulada sin conectarte a equipos industriales reales.
+Nuestro **AB-PLC Simulator** publica opcionalmente un PLC virtual por Modbus TCP en el mismo ordenador, únicamente para lectura. En el proyecto del simulador ejecuta **npm run suite:live**, abre la URL privada de la HMI y desde AB-Modbus Studio configura **127.0.0.1:1502, Unit ID 1, FC03, dirección 0, cantidad 5**, dejando desmarcada la autorización LAN. Puedes supervisar su CPU simulada sin conectarte a equipos industriales reales.
 
-Consulta el [procedimiento de integración, mapa de registros y limitaciones](docs/AB_PLC_SIMULATOR.md). El servicio Node ejecuta su propia CPU y todavía no sincroniza el estado con la interfaz web del simulador.
+Consulta el [procedimiento de integración, mapa de registros y limitaciones](docs/AB_PLC_SIMULATOR.md). En Suite Live, el navegador y Modbus TCP consultan la misma CPU virtual del proceso Node; la alternativa npm run sim:modbus mantiene una instancia independiente.
 
 ## Conectar a un equipo autorizado
 
