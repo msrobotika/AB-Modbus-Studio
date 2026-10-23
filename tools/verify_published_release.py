@@ -79,7 +79,7 @@ def smoke_hmi(binary: Path, directory: Path) -> dict:
     output_file = directory / "service-output.txt"
     data_dir = directory / "profiles"
     data_dir.mkdir()
-    with output_file.open("w+", encoding="utf-8") as output:
+    with output_file.open("w+", encoding="utf-8", errors="replace") as output:
         process = subprocess.Popen([str(binary), "--no-browser", "--port", "0",
                                     "--data-dir", str(data_dir)],
                                    stdout=output, stderr=subprocess.STDOUT,
@@ -148,7 +148,7 @@ def main():
     args = parser.parse_args()
     hashes = check_checksums(args.assets_dir)
     asset_name = "AB-Modbus-Studio-" + args.platform + ".zip"
-    with tempfile.TemporaryDirectory(prefix="abmodbus-release-qa-") as tmp:
+    with tempfile.TemporaryDirectory(prefix="abmodbus-release-qa-", ignore_cleanup_errors=True) as tmp:
         root = Path(tmp)
         unpack_safe(args.assets_dir / asset_name, root)
         binary = root / ("AB-Modbus-Studio.exe" if args.platform == "Windows"
