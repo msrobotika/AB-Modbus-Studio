@@ -20,3 +20,21 @@
 .quickstart-links a[hidden]{display:none}
 @media(max-width:1050px){.quickstart-heading{align-items:flex-start;flex-direction:column}}
 @media(max-width:620px){.quickstart{padding:16px}.quickstart-steps{grid-template-columns:1fr}.quickstart-heading button{width:100%}}
+
+
+/* Accessible mobile cards: preserve semantic table and visible values. */
+@media(max-width:620px){
+  .results .table-wrap,.frames{overflow:visible;max-height:none}
+  .results table,.results tbody,.frames table,.frames tbody{display:block;width:100%;margin-top:0}
+  .results thead,.frames thead{position:absolute!important;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+  .results tbody,.frames tbody{display:grid;gap:9px;margin-top:12px}
+  .results tbody tr,.frames tbody tr{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));border:1px solid #dfe9ed;border-radius:8px;overflow:hidden;background:white}
+  .results tbody td,.frames tbody td{display:flex;flex-direction:column;justify-content:center;min-width:0;padding:8px 10px;font-size:12px;line-height:1.45;overflow-wrap:anywhere}
+  .results tbody td::before,.frames tbody td::before{content:attr(data-label);font:600 10px/1.5 Segoe UI,system-ui,sans-serif;color:#788b97;margin-bottom:3px}
+  .results tbody td:first-child{grid-column:1/-1;background:#f4f8f7;font-weight:700}
+  .results tbody td.empty,.frames tbody td.empty{grid-column:1/-1;display:block}
+  .results tbody td.empty::before,.frames tbody td.empty::before{content:none}
+  .frames tbody td:last-child{grid-column:1/-1;background:#f8fbfb}
+  .frames .frame-data{min-width:0;font-size:11px;white-space:normal;word-break:break-word}
+  .frames .frame-detail{overflow-wrap:anywhere}
+}
