@@ -73,3 +73,33 @@ jobs:
         shell: pwsh
         run: |
           python tools/verify_published_release.py --assets-dir (Join-Path $env:RUNNER_TEMP "abmodbus-published-v0.1.0") --platform '${{ runner.os }}'
+
+  candidate:
+    name: New SCADA candidate / ${{ matrix.os }} Python 3.13 (NOT a Release)
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Build portable from currently checked out source
+        run: |
+          python -m pip install -r requirements-build.txt
+          python tools/build.py
+      - name: Smoke packaged candidate with own simulator and SCADA routes
+        shell: pwsh
+        run: |
+          $binary = if ($env:RUNNER_OS -eq 'Windows') { 'dist/AB-Modbus-Studio.exe' } else { 'dist/AB-Modbus-Studio' }
+          python tools/verify_candidate_binary.py --binary $binary
+      - name: Keep candidate as review-only evidence, not a GitHub Release
+        uses: actions/upload-artifact@v4
+        with:
+          name: candidate-scada-${{ runner.os }}
+          path: dist/
+          if-no-files-found: error
+          retention-days: 14
