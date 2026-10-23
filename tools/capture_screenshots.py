@@ -82,6 +82,16 @@ def capture() -> None:
                 )
                 if not width_ok:
                     raise AssertionError("Interfaz con desplazamiento horizontal en 390 px")
+                decimal = page.locator("#values tr td:nth-child(3)").first
+                if decimal.inner_text() != "230":
+                    raise AssertionError("El primer registro no muestra el valor FC03 correcto")
+                box = decimal.bounding_box()
+                if not box or box["x"] < 0 or box["x"] + box["width"] > 390:
+                    raise AssertionError("El valor decimal está recortado en móvil")
+                frame_cell = page.locator("#frames tr td:nth-child(4)").first
+                frame_box = frame_cell.bounding_box()
+                if not frame_box or frame_box["x"] + frame_box["width"] > 390:
+                    raise AssertionError("La trama TX/RX no es visible en móvil")
                 page.screenshot(
                     path=str(SCREENSHOTS / "movil.png"),
                     full_page=True, animations="disabled",
