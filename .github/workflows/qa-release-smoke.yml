@@ -103,3 +103,28 @@ jobs:
           path: dist/
           if-no-files-found: error
           retention-days: 14
+
+  suite-interop:
+    name: Actual PLC VirtualPLC ↔ Modbus Studio FC01/03 (no mocks)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: msrobotika/AB-PLC-Simulator
+          ref: b48095cd99d59d09f98aa93e98a9f65c85eacde8
+          path: plc-simulator
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Record immutable PLC ref and runtime
+        run: |
+          git -C plc-simulator rev-parse HEAD
+          node --version
+          python --version
+      - name: Match actual HMI snapshot against Modbus FC01/03 from same CPU
+        run: python tools/qa_plc_interop.py --plc-repo plc-simulator
