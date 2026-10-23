@@ -75,7 +75,7 @@ def run_binary(binary: Path, *args: str, timeout: int = 45) -> str:
     return result.stdout.strip()
 
 
-def smoke_hmi(binary: Path, directory: Path) -> dict:
+def smoke_hmi(binary: Path, directory: Path, *, expect_legacy_without_scada: bool = False) -> dict:
     output_file = directory / "service-output.txt"
     data_dir = directory / "profiles"
     data_dir.mkdir()
@@ -127,6 +127,11 @@ def smoke_hmi(binary: Path, directory: Path) -> dict:
                         "scada" in data.lower() if path.endswith(".html") else True)
                 except HTTPError as err:
                     scada[path] = False if err.code == 404 else "HTTP_" + str(err.code)
+            if expect_legacy_without_scada:
+                if any(value is not False for value in scada.values()):
+                    raise RuntimeError("La Release legacy cambió: verificar nuevos activos antes de continuar")
+                return {"hmi":"PASS", "loopback_only":True, "authenticated_state":"PASS",
+                        "scada_ui":"LEGACY_NOT_INCLUDED", "scada_assets":scada}
             if not all(value is True for value in scada.values()):
                 raise RuntimeError("RELEASE_GAP: el portable publicado no contiene SCADA completo: " +
                                    json.dumps(scada, ensure_ascii=False))
@@ -145,6 +150,8 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--assets-dir", required=True, type=Path)
     parser.add_argument("--platform", required=True, choices=("Linux","Windows"))
+    parser.add_argument("--expect-legacy-no-scada", action="store_true",
+                        help="v0.1.0 antigua: exigir ausencia conocida de módulo SCADA")
     args = parser.parse_args()
     hashes = check_checksums(args.assets_dir)
     asset_name = "AB-Modbus-Studio-" + args.platform + ".zip"
@@ -162,10 +169,14 @@ def main():
         result = json.loads(run_binary(binary, "--self-test").splitlines()[-1])
         if result != {"ok":True,"version":"0.1.0","functions":[1,2,3,4]}:
             raise RuntimeError("Autoprueba FC01-04 / versión inesperada: "+repr(result))
-        hmi = smoke_hmi(binary, root)
+        hmi = smoke_hmi(binary, root, expect_legacy_without_scada=args.expect_legacy_no_scada)
     print(json.dumps({"release":TAG,"platform":args.platform,"sha256":hashes[asset_name],
       "self_test":"PASS",**hmi}, ensure_ascii=False))
-    print("PASS: Release oficial; SHA256, ejecución, FC01-04, HMI autenticada, SCADA")
+    print("PASS: Release oficial; SHA256, ejecución, FC01-04, HMI autenticada")
+    if args.expect_legacy_no_scada:
+        print("RELEASE_GAP_VERIFIED: el ZIP v0.1.0 carece de SCADA; NO promocionar como SCADA")
+    else:
+        print("SCADA routes verified")
 
 
 if __name__=="__main__":
