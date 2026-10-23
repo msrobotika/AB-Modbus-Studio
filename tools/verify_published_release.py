@@ -41,7 +41,8 @@ def check_checksums(folder: Path) -> dict[str, str]:
         zip_path = folder / filename
         if not zip_path.is_file():
             raise RuntimeError("Falta artefacto de Release: " + filename)
-        actual = hashlib.file_digest(zip_path.open("rb"), "sha256").hexdigest()
+        with zip_path.open("rb") as handle:
+            actual = hashlib.file_digest(handle, "sha256").hexdigest()
         if actual.lower() != digest.lower():
             raise RuntimeError("HASH MISMATCH: " + filename)
         hashes[filename] = actual
@@ -122,7 +123,8 @@ def smoke_hmi(binary: Path, directory: Path) -> dict:
             for path in ("/scada.html", "/scada.js", "/scada.css"):
                 try:
                     st, data = request(path)
-                    scada[path] = st == 200 and ("scada" in data.lower())
+                    scada[path] = st == 200 and len(data) > 50 and (
+                        "scada" in data.lower() if path.endswith(".html") else True)
                 except HTTPError as err:
                     scada[path] = False if err.code == 404 else "HTTP_" + str(err.code)
             if not all(value is True for value in scada.values()):
