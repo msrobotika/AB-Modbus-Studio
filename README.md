@@ -60,6 +60,8 @@ reales ni autorización de LAN persistente.
 - [Capturas automáticas de SCADA desde Chromium y simulador TCP](https://github.com/msrobotika/AB-Modbus-Studio/actions/workflows/screenshots.yml).
 - Los PNG se consultan en `docs/screenshots/` **solo después** de que la ejecución de GitHub Actions los genere correctamente. No se presentan mockups como capturas.
 
+> **Aviso sobre las descargas v0.1.0 (23/10/2026):** los ZIP publicados en la [Release preliminar v0.1.0](https://github.com/msrobotika/AB-Modbus-Studio/releases/tag/v0.1.0) son **anteriores a la incorporación de AB-Modbus SCADA** y no contienen las rutas SCADA. Para probar el módulo usa **código fuente de main** con Python 3.11+, o espera a una futura versión candidata comprobada. No se ha publicado todavía un portable nuevo con SCADA. [Evidencia de auditoría](docs/QA_RELEASE_2026-10-23.md). Este aviso no afecta a las funciones FC01–04 del laboratorio del paquete original.
+
 ## Descargar y ejecutar
 
 El código está en este repositorio. En GitHub, **Code → Download ZIP** descarga
