@@ -46,11 +46,16 @@ def capture() -> None:
                 page.goto(url, wait_until="domcontentloaded", timeout=20_000)
                 page.locator("#sim-toggle").wait_for(state="visible", timeout=12_000)
                 # Comprobación real de lectura FC03, no datos falsos en el HTML.
-                page.locator("#demo").click(timeout=15_000)
+                page.locator("#quick-demo").click(timeout=15_000)
                 page.wait_for_function(
                     "() => document.querySelectorAll('#values tr').length === 8 "
                     "&& document.querySelector('#read-meta').textContent.includes('8 valores')",
                     timeout=20_000,
+                )
+                page.wait_for_function(
+                    "() => document.querySelector('#primera-prueba').dataset.quickStage === '3' "
+                    "&& !document.querySelector('#quick-results-link').hidden",
+                    timeout=10_000,
                 )
                 actual = [int(cell.inner_text()) for cell in page.locator("#values tr td:nth-child(3)").all()]
                 expected = [230, 1500, 42, 2026, 100, 0, 65535, 1234]
@@ -72,6 +77,11 @@ def capture() -> None:
                 )
                 page.set_viewport_size({"width": 390, "height": 844})
                 page.wait_for_timeout(350)
+                width_ok = page.evaluate(
+                    "document.documentElement.scrollWidth <= window.innerWidth + 2"
+                )
+                if not width_ok:
+                    raise AssertionError("Interfaz con desplazamiento horizontal en 390 px")
                 page.screenshot(
                     path=str(SCREENSHOTS / "movil.png"),
                     full_page=True, animations="disabled",
