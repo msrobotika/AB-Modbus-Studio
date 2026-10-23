@@ -1,0 +1,75 @@
+name: QA of source and published Modbus release
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  source:
+    name: Source + Modbus loopback / ${{ matrix.os }} Python 3.13
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 14
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Record environment and SHA
+        shell: bash
+        run: |
+          python --version
+          git rev-parse HEAD
+      - name: Test original motor and SCADA JS (no pip dependencies)
+        run: |
+          python -m unittest discover -v
+          python -m ab_modbus --self-test
+          node --check ab_modbus/web/scada.js
+      - name: Install Chromium for functional source browser trial
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          python -m pip install "playwright==1.55.1"
+          python -m playwright install --with-deps chromium
+      - name: Real FC03 + alarm trend Chromium flow
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          python tools/capture_screenshots.py
+          python tools/capture_scada.py
+      - name: Keep authentic capture evidence (NOT auto-commit)
+        if: matrix.os == 'ubuntu-latest'
+        uses: actions/upload-artifact@v4
+        with:
+          name: modbus-scada-source-chromium-qa
+          path: docs/screenshots/*.png
+          if-no-files-found: error
+          retention-days: 30
+  release:
+    name: Published v0.1.0 ZIP / ${{ matrix.os }} (immutable audit)
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Download real release assets from GitHub, not source archives
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $folder = Join-Path $env:RUNNER_TEMP "abmodbus-published-v0.1.0"
+          New-Item -ItemType Directory -Force -Path $folder | Out-Null
+          gh release download v0.1.0 --repo msrobotika/AB-Modbus-Studio --dir $folder
+          Get-ChildItem -File -Path $folder | Select-Object Name, Length
+      - name: Verify manifest + boot REAL release binary + FC01-04 + local HMI and SCADA
+        shell: pwsh
+        run: |
+          python tools/verify_published_release.py --assets-dir (Join-Path $env:RUNNER_TEMP "abmodbus-published-v0.1.0") --platform '${{ runner.os }}'
