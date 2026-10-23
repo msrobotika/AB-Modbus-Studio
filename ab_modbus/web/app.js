@@ -6,6 +6,7 @@ if (token) sessionStorage.setItem("ab-session", token);
 history.replaceState(null, "", location.pathname);
 let state = null, events = [], polling = false, pollTimer = null, busy = false, refreshing = false, closed = false;
 let lastFrameKey = "", lastProfileKey = "";
+let firstReadComplete = false;
 const numericFields = ["port", "unit", "function", "address", "count", "timeout_ms"];
 
 function notice(message, error = false) {
@@ -50,6 +51,23 @@ function element(tag, content, className) {
   return node;
 }
 function cell(row, content, className) {row.append(element("td", content, className));}
+function updateQuickstart() {
+  const simulatorOn = state?.simulator_port != null;
+  const stage = firstReadComplete ? 3 : (simulatorOn ? 2 : 1);
+  $("primera-prueba").dataset.quickStage = String(stage);
+  document.querySelectorAll("[data-quick-step]").forEach(el => {
+    const index = Number(el.dataset.quickStep);
+    el.classList.toggle("done", index < stage);
+    el.classList.toggle("current", index === stage);
+  });
+  $("quick-results-link").hidden = !firstReadComplete;
+  $("quick-feedback").textContent = firstReadComplete
+    ? "Lectura comprobada: los registros ya están en «Datos de la última lectura». Consulta las tramas TX/RX en el monitor y prueba otros valores en el laboratorio."
+    : simulatorOn
+      ? "El simulador está activo. Pulsa «Probar con datos simulados» para leer ocho registros FC03 por TCP local."
+      : "Pulsa el botón para ejecutar una lectura sobre 127.0.0.1. No se envían escrituras Modbus.";
+  $("quick-demo").disabled = closed || busy;
+}
 function showValues(result) {
   const fragment = document.createDocumentFragment();
   const prefixes = {1: 0, 2: 10000, 3: 40000, 4: 30000};
@@ -67,6 +85,8 @@ function showValues(result) {
   $("values").replaceChildren(fragment);
   $("read-meta").textContent = `${result.values.length} valores · ${result.elapsed_ms} ms · TID ${result.transaction}`;
   $("result-context").textContent = `${result.host}:${result.port} · unidad ${result.unit} · FC${String(result.function).padStart(2, "0")} · ${new Date().toLocaleTimeString("es-ES")} · última lectura correcta`;
+  firstReadComplete = true;
+  updateQuickstart();
 }
 async function readOnce() {
   if (busy || closed) return;
@@ -83,6 +103,7 @@ async function readOnce() {
     notice(error.message, true);
   } finally {
     busy = false;
+    updateQuickstart();
     $("read").disabled = false;
     await refresh();
     if (polling) pollTimer = setTimeout(readOnce, Number($("interval").value));
@@ -123,6 +144,7 @@ async function refresh() {
     $("sim-port").disabled = running; $("sim-unit").disabled = running;
     $("sim-endpoint").textContent = `127.0.0.1:${state.simulator_port || $("sim-port").value}`;
     events = state.events; renderFrames();
+    updateQuickstart();
     const profileKey = JSON.stringify(state.profiles);
     if (profileKey !== lastProfileKey) {
       const selected = $("profile-list").value;
@@ -161,8 +183,11 @@ $("read-form").addEventListener("input", event => {
 $("function").addEventListener("change", updateCountLimit);
 document.addEventListener("visibilitychange", () => {if (document.hidden) stopPolling();});
 action("sim-toggle", async () => {
-  if (state?.simulator_port) {stopPolling(); await api("/api/simulator/stop", {}); notice("Simulador detenido.");}
+  if (state?.simulator_port) {stopPolling(); await api("/api/simulator/stop", {}); firstReadComplete = false; notice("Simulador detenido.");}
   else {await api("/api/simulator/start", {port: Number($("sim-port").value), unit: Number($("sim-unit").value)}); notice("Simulador iniciado. Puedes leerlo desde el cliente.");}
+});
+$("quick-demo").addEventListener("click", () => {
+  if (!$("demo").disabled && !busy && !closed) $("demo").click();
 });
 action("demo", async () => {
   if (busy) throw new Error("Espera a que termine la lectura en curso.");
