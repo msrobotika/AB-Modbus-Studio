@@ -1,0 +1,35 @@
+name: Browser UX smoke
+on:
+  pull_request:
+    paths:
+      - "ab_modbus/web/**"
+      - "tools/capture_screenshots.py"
+      - ".github/workflows/ux-smoke.yml"
+permissions:
+  contents: read
+jobs:
+  first-read-browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Check JavaScript syntax
+        run: node --check ab_modbus/web/app.js
+      - name: Install headless Chromium for real interaction
+        run: |
+          python -m pip install "playwright>=1.55,<2"
+          python -m playwright install --with-deps chromium
+      - name: First-click FC03 read and responsive checks
+        run: python tools/capture_screenshots.py
+      - name: Store real screenshots from this PR
+        uses: actions/upload-artifact@v4
+        with:
+          name: ab-modbus-first-read-ux
+          path: |
+            docs/screenshots/escritorio.png
+            docs/screenshots/monitor-tramas.png
+            docs/screenshots/movil.png
+          if-no-files-found: error
