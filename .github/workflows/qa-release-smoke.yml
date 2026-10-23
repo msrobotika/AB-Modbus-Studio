@@ -72,7 +72,7 @@ jobs:
       - name: Verify manifest + boot REAL release binary + FC01-04 + local HMI and SCADA
         shell: pwsh
         run: |
-          python tools/verify_published_release.py --assets-dir (Join-Path $env:RUNNER_TEMP "abmodbus-published-v0.1.0") --platform '${{ runner.os }}'
+          python tools/verify_published_release.py --assets-dir (Join-Path $env:RUNNER_TEMP "abmodbus-published-v0.1.0") --platform '${{ runner.os }}' --expect-legacy-no-scada
 
   candidate:
     name: New SCADA candidate / ${{ matrix.os }} Python 3.13 (NOT a Release)
