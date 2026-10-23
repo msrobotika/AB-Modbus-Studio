@@ -60,3 +60,14 @@ En Windows, sustituir Linux por Windows. La prueba exige los ZIP verdaderos, ver
 | Traffic (vistas, usuarios únicos) | Insights privado | NO_DISPONIBLE |
 
 No sustituir estos marcadores por PASADO hasta obtener conclusiones/logs y SHA de cada workflow.
+
+## Resultados observados en ejecución PR #1 — 23/10/2026
+
+Evidencia: [Actions 39986719928](https://github.com/msrobotika/AB-Modbus-Studio/actions/runs/39986719928), commit `86d56b7f98ab11b1507848ff02859ad988fe0f36`.
+
+- Fuente Python 3.13: **40 pruebas PASADAS** en Ubuntu y Windows. En Linux, Chromium completó seis capturas auténticas (escritorio, monitor de tramas, móvil, SCADA, tendencias y SCADA móvil), incluida lectura FC03 de valores 230, 1500, 42, 2026, 100, 0, 65535, 1234 y activación de aviso demostrativo de umbral 220.
+- Nueva candidata empaquetada desde esa rama (NO Release): PyInstaller 6.16.0 sobre Python 3.13.16, Windows y Ubuntu. Se ejecutó su `--self-test` (FC01–04), se inició HMI localhost, se consultó API con y sin token, y se verificaron las rutas `/scada.html`, `/scada.js`, `/scada.css`: **PASADO ambos SO**. Los artefactos están en la propia ejecución QA de la PR, no en Releases.
+- Release publicada v0.1.0: se descargaron los ZIP originales y `SHA256SUMS.txt`, verificando **SHA-256**. Los ejecutables pasaron `--self-test` e HMI autenticada; ambos carecen de los tres recursos SCADA. Este desfase está CONFIRMADO en Linux y Windows: no es un bug supuesto. La ejecución inicial marcó fallo `RELEASE_GAP`; ahora la opción explícita `--expect-legacy-no-scada` comprueba esta ausencia conocida sin vender ese paquete como SCADA.
+- No se ha cambiado la Release v0.1.0 ni su checksum, ni se ha instalado en el PC del usuario ni probado con hardware real.
+
+**Pendiente antes de publicar una próxima versión:** elegir nueva versión coherente en aplicación/paquetes, revisión de cambios, SHA256 de distribución final, pruebas en el SHA final y aprobación del responsable. Los logs de la ejecución anterior no sustituyen las pruebas del último commit: comprobar de nuevo la matriz.
