@@ -50,7 +50,11 @@ function element(tag, content, className) {
   if (className) node.className = className;
   return node;
 }
-function cell(row, content, className) {row.append(element("td", content, className));}
+function cell(row, content, className, label) {
+  const td = element("td", content, className);
+  if (label) td.dataset.label = label;
+  row.append(td);
+}
 function updateQuickstart() {
   const simulatorOn = state?.simulator_port != null;
   const stage = firstReadComplete ? 3 : (simulatorOn ? 2 : 1);
@@ -73,12 +77,12 @@ function showValues(result) {
   const prefixes = {1: 0, 2: 10000, 3: 40000, 4: 30000};
   result.values.forEach((value, i) => {
     const address = result.address + i, row = element("tr");
-    cell(row, address, "number");
+    cell(row, address, "number", "Dirección PDU");
     const reference = address < 9999 ? String(prefixes[result.function] + address + 1).padStart(5, "0") : "—";
-    cell(row, reference, "number");
-    cell(row, value, "number value");
-    cell(row, "0x" + value.toString(16).toUpperCase().padStart(4, "0"), "number");
-    const status = element("td");
+    cell(row, reference, "number", "Referencia");
+    cell(row, value, "number value", "Decimal");
+    cell(row, "0x" + value.toString(16).toUpperCase().padStart(4, "0"), "number", "Hexadecimal");
+    const status = element("td"); status.dataset.label = "Estado";
     status.append(element("span", result.function < 3 ? (value ? "ON" : "OFF") : "Leído", "state-tag"));
     row.append(status); fragment.append(row);
   });
@@ -119,9 +123,9 @@ function renderFrames() {
   const fragment = document.createDocumentFragment();
   [...visible].reverse().forEach(event => {
     const row = element("tr");
-    cell(row, event.time.slice(11, 23), "number"); cell(row, event.source);
-    cell(row, event.direction, `direction ${event.direction === "ERROR" ? "error" : ""}`);
-    const data = element("td", event.hex || event.detail, "frame-data");
+    cell(row, event.time.slice(11, 23), "number", "Hora UTC"); cell(row, event.source, undefined, "Origen");
+    cell(row, event.direction, `direction ${event.direction === "ERROR" ? "error" : ""}`, "Dirección");
+    const data = element("td", event.hex || event.detail, "frame-data"); data.dataset.label = "Trama / detalle";
     if (event.hex && event.detail) data.append(element("span", event.detail, "frame-detail"));
     row.append(data); fragment.append(row);
   });
